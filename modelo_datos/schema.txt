@@ -1,0 +1,27 @@
+//DBML (Database Markup Language) was used to define database structure (Tool: https://dbdiagram.io)
+
+Table barrios {
+  codigo integer [primary key]
+  nombre text [not null]
+}
+
+Table clientes {
+  num_doc integer [not null]
+  tipo_doc integer [not null]
+  canal text [not null]
+  cod_dispositivo integer [not null]
+  num_trx integer [not null]
+  mnt_total_trx float [not null]
+}
+
+Table dispositivos {
+  tipo text [not null]
+  codigo integer [pk]
+  latitud float [not null]
+  longitud float [not null]
+  id_barrio integer [not null]
+}
+
+Ref barrios_dispositivos: dispositivos.id_barrio > barrios.codigo // many-to-one
+
+Ref dispositivos_clientes: dispositivos.codigo < clientes.cod_dispositivo
