@@ -1,5 +1,5 @@
 #Dockerfile
-FROM python:3.10.13
+FROM python:3.11.6
 RUN apt-get -y update && apt-get -y upgrade
 COPY src/ ./
 COPY requirements.txt ./

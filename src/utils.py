@@ -185,7 +185,12 @@ def q3(df_sabana_datos):
                 break
         dicc_clientes_canales[i] = tmp_list
     
-    return dicc_clientes_canales
+    df_q3 = df =pd.DataFrame(columns=["num_doc", "canales"])
+    for i in dicc_clientes_canales.keys():
+        new_row = [i, ','.join(dicc_clientes_canales[i])]
+        #df_q3 = df_q3.append(new_row, ignore_index=True)
+        df_q3.loc[len(df_q3)] = new_row
+    return df_q3
 
 def q4(df_sabana_datos):
     df_sabana_datos = df_sabana_datos
@@ -227,11 +232,11 @@ def q4(df_sabana_datos):
         #Agregamos el dataframe reducido a nuestro dataframe resultante.
         df_result = pd.concat([df_result, aux])
 
-        #Ordenamos los resultados por la distancia de mayor a menor, y limitamos el df a los 20 primeros registros
-        #(dado que por las combinaciones posibles la misma comparacion de dispositivos queda dos veces)
-        df_q4_2 = df_result.sort_values(['distancia'], ascending =[False]).head(20)
-        #Marcamos los registros repetidos para dejar unicamente los 10 dispositivos con mas distancia
-        df_q4_2['dup_validation'] = df_q4_2.duplicated(subset='distancia', keep='first')
-        #Filtramos para eliminar duplicados
-        df_q4_2 = df_q4_2[df_q4_2['dup_validation'] == False].reset_index(drop=True)
-        return dist_df_waze, dist_df_linear, df_q4_2
+    #Ordenamos los resultados por la distancia de mayor a menor, y limitamos el df a los 20 primeros registros
+    #(dado que por las combinaciones posibles la misma comparacion de dispositivos queda dos veces)
+    df_q4_2 = df_result.sort_values(['distancia'], ascending =[False]).head(20)
+    #Marcamos los registros repetidos para dejar unicamente los 10 dispositivos con mas distancia
+    df_q4_2['dup_validation'] = df_q4_2.duplicated(subset='distancia', keep='first')
+    #Filtramos para eliminar duplicados
+    df_q4_2 = df_q4_2[df_q4_2['dup_validation'] == False].reset_index(drop=True)
+    return dist_df_waze, dist_df_linear, df_q4_2
