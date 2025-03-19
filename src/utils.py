@@ -130,9 +130,10 @@ def q3(df_sabana_datos):
     #de cada cliente
     df_q3_2 = sqldf(query_q3_2, env=None).merge(df_q3_1, how='left', on=['num_doc'])
     df_q3_2['proporcion_uso_canal'] = df_q3_2['trx_canal'] / df_q3_2['total_trx']
-    #Finalmente creamos un diccionario donde tenemos en las llaves los clientes (unicos) y en los valores el listado de canales que representan
-    #más del 51% de sus transacciones
-    dicc_clientes_canales = {}
+    #Finalmente creamos un dataframe donde tenemos los clientes (unicos), el listado de canales que representan
+    #más del 51% de sus transacciones separados por comas y la suma exacta de la proporcion que representan estos canales frente al total.
+    df_q3 = df =pd.DataFrame(columns=["num_doc", "canales", "proporcion_uso"])
+    #dicc_clientes_canales = {}
     for i in tqdm(df_q3_2['num_doc'].unique(), desc="Procesando", unit="its"):
         df_tmp = df_q3_2[df_q3_2['num_doc'] == i].sort_values(['proporcion_uso_canal'], ascending =[False])
         tmp_list = []
@@ -142,13 +143,14 @@ def q3(df_sabana_datos):
             tmp_sum += df_tmp.iloc[row]['proporcion_uso_canal']
             if tmp_sum >= 0.51:
                 break
-        dicc_clientes_canales[i] = tmp_list
-    
-    df_q3 = df =pd.DataFrame(columns=["num_doc", "canales"])
-    for i in tqdm(dicc_clientes_canales.keys(), desc="Procesando", unit="its"):
-        new_row = [i, ','.join(dicc_clientes_canales[i])]
-        #df_q3 = df_q3.append(new_row, ignore_index=True)
+        new_row = [i, ','.join(tmp_list), tmp_sum]
         df_q3.loc[len(df_q3)] = new_row
+        #dicc_clientes_canales[i] = tmp_list
+    
+    #for i in tqdm(dicc_clientes_canales.keys(), desc="Procesando", unit="its"):
+    #    new_row = [i, ','.join(dicc_clientes_canales[i])]
+    #    #df_q3 = df_q3.append(new_row, ignore_index=True)
+    #    df_q3.loc[len(df_q3)] = new_row
     print("q3 resuelta de forma exitosa")
     return df_q3
 
